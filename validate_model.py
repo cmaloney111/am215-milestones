@@ -1,10 +1,3 @@
-"""
-Tennis Model Validation: Extending game simulation to sets and matches
-
-This script extends the continuous-time Poisson process model from testing.py
-to simulate full tennis sets and matches, then validates against real ATP data.
-"""
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,9 +8,7 @@ from collections import Counter
 # Set random seed for reproducibility
 np.random.seed(42)
 
-# ============= TENNIS GAME SIMULATION (from testing.py) =============
-
-def simulate_game(lambda_s, lambda_r, dt=0.1, max_time=600):
+def simulate_game(lambda_s, lambda_r, dt=0.1, max_time=500):
     """
     Simulate a single tennis game using continuous-time Poisson process.
 
@@ -50,8 +41,6 @@ def simulate_game(lambda_s, lambda_r, dt=0.1, max_time=600):
                 elif server_pts == 3:
                     if receiver_pts < 3:
                         return 'server', t, deuce_count
-                    elif receiver_pts == 3:
-                        state = 'ad_s'
             elif state == 'deuce':
                 state = 'ad_s'
             elif state == 'ad_s':
@@ -67,8 +56,6 @@ def simulate_game(lambda_s, lambda_r, dt=0.1, max_time=600):
                 elif receiver_pts == 3:
                     if server_pts < 3:
                         return 'receiver', t, deuce_count
-                    elif server_pts == 3:
-                        state = 'ad_r'
             elif state == 'deuce':
                 state = 'ad_r'
             elif state == 'ad_r':
@@ -81,11 +68,12 @@ def simulate_game(lambda_s, lambda_r, dt=0.1, max_time=600):
             state = 'deuce'
             deuce_count += 1
 
-    # If we hit max time, whoever is ahead wins (shouldn't happen often)
+    # If we hit max time, whoever is ahead wins
+    # This shouldn't happen often and may need to be changed
     return 'server' if server_pts > receiver_pts else 'receiver', t, deuce_count
 
 
-def simulate_tiebreak(lambda_s, lambda_r, dt=0.1, max_time=600):
+def simulate_tiebreak(lambda_s, lambda_r, dt=0.1, max_time=500):
     """
     Simulate a tiebreak using continuous-time Poisson process.
     Players alternate serves every 2 points.
@@ -105,10 +93,10 @@ def simulate_tiebreak(lambda_s, lambda_r, dt=0.1, max_time=600):
         t += dt
 
         # Determine who is serving (alternates every 2 points)
-        # Player 1 serves points 0, 1, 4, 5, 8, 9, ...
-        # Player 2 serves points 2, 3, 6, 7, 10, 11, ...
+        # Player 1 serves points 0, 3, 4, 7, 8, ...
+        # Player 2 serves points 1, 2, 5, 6, 9, ...
         serve_pattern = total_points % 4
-        is_p1_serving = serve_pattern in [0, 1]
+        is_p1_serving = serve_pattern in [0, 3]
 
         # Determine scoring rates based on who is serving
         if is_p1_serving:

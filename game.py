@@ -10,7 +10,7 @@ lambda_r = 0.35 / 30  # Receiver wins point at this rate
 lam = lambda_s + lambda_r  # Total rate
 
 # Simulation parameters
-T = 300  # Maximum time for a game (seconds)
+T = 500  # Maximum time for a game (seconds)
 n_games = 10000  # Number of games to simulate
 dt = 0.1  # Time step (seconds)
 
@@ -58,9 +58,6 @@ for game_idx in range(n_games):
                     if receiver_pts < 3:
                         # Server wins game
                         state = 'finished'
-                    elif receiver_pts == 3:
-                        # Go to advantage server
-                        state = 'ad_s'
             elif state == 'deuce':
                 state = 'ad_s'
             elif state == 'ad_s':
@@ -80,9 +77,6 @@ for game_idx in range(n_games):
                     if server_pts < 3:
                         # Receiver wins game
                         state = 'finished'
-                    elif server_pts == 3:
-                        # Go to advantage receiver
-                        state = 'ad_r'
             elif state == 'deuce':
                 state = 'ad_r'
             elif state == 'ad_r':
@@ -112,7 +106,7 @@ axes[0, 0].set_ylabel('Probability', fontsize=11)
 axes[0, 0].set_title('Probability of Deuce State', fontsize=12, fontweight='bold')
 axes[0, 0].grid(True, alpha=0.3)
 axes[0, 0].legend()
-axes[0, 0].set_xlim([0, 200])
+axes[0, 0].set_xlim([0, T])
 
 # Plot 2: Advantage states
 axes[0, 1].plot(times, prob_adv_s, 'r-', linewidth=2, label='P(Ad-Server | Active)')
@@ -122,7 +116,7 @@ axes[0, 1].set_ylabel('Probability', fontsize=11)
 axes[0, 1].set_title('Advantage States', fontsize=12, fontweight='bold')
 axes[0, 1].grid(True, alpha=0.3)
 axes[0, 1].legend()
-axes[0, 1].set_xlim([0, 200])
+axes[0, 1].set_xlim([0, T])
 
 # Plot 3: Fraction of games still active
 axes[1, 0].plot(times, fraction_active, 'g-', linewidth=2)
@@ -130,10 +124,10 @@ axes[1, 0].set_xlabel('Time (seconds)', fontsize=11)
 axes[1, 0].set_ylabel('Fraction of Games', fontsize=11)
 axes[1, 0].set_title('Games Still Active (Not Yet Won)', fontsize=12, fontweight='bold')
 axes[1, 0].grid(True, alpha=0.3)
-axes[1, 0].set_xlim([0, 200])
+axes[1, 0].set_xlim([0, T])
 
-# Plot 4: Score distribution at t=60s (example snapshot)
-t_snapshot = 60  # seconds
+# Plot 4: Score distribution at t=300s (example snapshot)
+t_snapshot = 300  # seconds
 idx = int(t_snapshot / dt)
 if idx < len(times):
     # Create a simple visualization of state probabilities
@@ -152,20 +146,15 @@ if idx < len(times):
     axes[1, 1].grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
-plt.savefig('tennis_simulation.png', bbox_inches='tight')
+plt.savefig('game_simulation.png', bbox_inches='tight')
 plt.show()
 
 # ============= SUMMARY STATISTICS =============
-print(f"\n{'='*60}")
-print(f"TENNIS GAME SIMULATION RESULTS")
-print(f"{'='*60}")
 print(f"Number of games simulated: {n_games:,}")
 print(f"Server scoring rate: λ_s = {lambda_s:.4f} points/sec")
 print(f"Receiver scoring rate: λ_r = {lambda_r:.4f} points/sec")
 print(f"Server advantage: {lambda_s/lam*100:.1f}% vs {lambda_r/lam*100:.1f}%")
-print(f"\nKey findings:")
+print(f"\nSome stats:")
 print(f"- Peak deuce probability: {np.max(prob_deuce):.3f} at t={times[np.argmax(prob_deuce)]:.1f}s")
-print(f"- Games finished by 60s: {(1-fraction_active[int(60/dt)])*100:.1f}%")
-print(f"- Games finished by 120s: {(1-fraction_active[int(120/dt)])*100:.1f}%")
-print(f"- Mean time to finish: ~{times[np.where(fraction_active < 0.5)[0][0]]:.1f}s (median)")
+print(f"- Median time to finish: ~{times[np.where(fraction_active < 0.5)[0][0]]:.1f}s")
 print(f"{'='*60}\n")
