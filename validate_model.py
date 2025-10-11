@@ -195,6 +195,8 @@ def simulate_set(lambda_s, lambda_r, dt=0.1):
 
 
 def simulate_match(lambda_s, lambda_r, best_of=3, dt=0.1):
+    lambda_s = 0.0025
+    lambda_r = 0.0025
     """
     Simulate a full tennis match (best of 3 or best of 5 sets).
 
@@ -572,8 +574,8 @@ def grid_search_parameters(real_data, n_sims=500):
     print("="*70)
 
     # Define parameter grid
-    server_advantages = [0.55, 0.60, 0.65, 0.70]  # Server win probability
-    total_rates = [0.020, 0.025, 0.030, 0.035, 0.040]  # Total points per second
+    server_advantages = [0.5]  # Server win probability
+    total_rates = [0.5]  # Total points per second
 
     best_params = None
     best_score = float('inf')
@@ -640,23 +642,23 @@ if __name__ == "__main__":
     real_data = load_atp_data('atp_matches_2024.csv')
 
     # Estimate parameters from data
-    print("\n[2/5] Estimating parameters from data...")
-    lambda_s_estimated, lambda_r_estimated = estimate_parameters_from_data(real_data)
+    # print("\n[2/5] Estimating parameters from data...")
+    # lambda_s_estimated, lambda_r_estimated = estimate_parameters_from_data(real_data)
 
-    # Run initial validation with estimated parameters
-    print(f"\n[3/5] Running validation with estimated parameters...")
-    print(f"  Simulating {1000} matches (this may take a minute)...")
-    sim_results_estimated = run_simulation_batch(
-        lambda_s_estimated, lambda_r_estimated, n_matches=1000
-    )
+    # # Run initial validation with estimated parameters
+    # print(f"\n[3/5] Running validation with estimated parameters...")
+    # print(f"  Simulating {1000} matches (this may take a minute)...")
+    # sim_results_estimated = run_simulation_batch(
+    #     lambda_s_estimated, lambda_r_estimated, n_matches=1000
+    # )
 
-    # Compare distributions
-    print("\n[4/5] Comparing distributions...")
-    metrics_estimated = compare_distributions(real_data, sim_results_estimated)
+    # # Compare distributions
+    # print("\n[4/5] Comparing distributions...")
+    # metrics_estimated = compare_distributions(real_data, sim_results_estimated)
 
-    # Run grid search for optimal parameters
-    print("\n[5/5] Running grid search for optimal parameters...")
-    best_params, best_sim_results = grid_search_parameters(real_data, n_sims=500)
+    # # Run grid search for optimal parameters
+    # print("\n[5/5] Running grid search for optimal parameters...")
+    # best_params, best_sim_results = grid_search_parameters(real_data, n_sims=500)
 
     # Final comparison with best parameters
     print("\n" + "="*70)
@@ -665,6 +667,7 @@ if __name__ == "__main__":
 
     # Run more simulations with best parameters
     print(f"\nRunning 2000 matches with optimized parameters...")
+    best_params = [0.05, 0.05]
     final_sim_results = run_simulation_batch(best_params[0], best_params[1], n_matches=2000)
 
     final_metrics = compare_distributions(real_data, final_sim_results)
