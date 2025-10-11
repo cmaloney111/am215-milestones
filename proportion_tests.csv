@@ -1,0 +1,2 @@
+test_name,real_proportion,sim_proportion,difference,z_statistic,p_value,effect_size,significant
+Tiebreak Frequency,0.38594327990135635,0.20166666666666666,-0.1842766132346897,14.975424317716602,0.0,0.4092013253838559,True
