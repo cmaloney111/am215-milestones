@@ -196,8 +196,6 @@ def simulate_set(lambda_s, lambda_r, dt=0.1):
 
 
 def simulate_match(lambda_s, lambda_r, best_of=3, dt=0.1):
-    lambda_s = 0.0025
-    lambda_r = 0.0025
     """
     Simulate a full tennis match (best of 3 or best of 5 sets).
 
@@ -652,8 +650,8 @@ def grid_search_parameters(real_data, n_sims=500):
     print("=" * 70)
 
     # Define parameter grid
-    server_advantages = [0.5]  # Server win probability
-    total_rates = [0.5]  # Total points per second
+    server_advantages = [0.55, 0.60, 0.65, 0.70]  # Server win probability
+    total_rates = [0.020, 0.025, 0.030, 0.035, 0.040]  # Total points per second
 
     best_params = None
     best_score = float("inf")

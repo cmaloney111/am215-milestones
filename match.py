@@ -247,8 +247,8 @@ def simulate_match(lambda_s, lambda_r, best_of=3, dt=0.1):
 # ==============================================================
 np.random.seed(42)
 
-lambda_s = 0.95 / 30  # server scoring rate (points/sec)
-lambda_r = 0.05 / 30  # receiver scoring rate
+lambda_s = 0.65 / 30  # server scoring rate (points/sec)
+lambda_r = 0.35 / 30  # receiver scoring rate
 n_matches = 5000
 best_of = 3
 dt = 0.1
